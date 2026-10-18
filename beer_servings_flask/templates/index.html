@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beer Servings Predictor</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <nav>
+        <h2>Beer Analytics</h2>
+        <a href="#predictor">Predict Alcohol</a>
+      </nav>
+
+      <div class="hero-content">
+        <p class="eyebrow">MACHINE LEARNING PROJECT</p>
+        <h1>Beer Servings & Alcohol Prediction</h1>
+        <p>
+          Explore beverage consumption data and estimate total litres of pure
+          alcohol using a trained regression model.
+        </p>
+        <a class="primary-button" href="#predictor">Try the Predictor</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="section">
+        <h2>Dataset Overview</h2>
+        <p class="section-description">
+          Explore alcohol consumption patterns across continents.
+        </p>
+
+        <div class="chart-card">
+          <img
+            src="{{ url_for('static', filename='continent_chart.png') }}"
+            alt="Average pure alcohol consumption by continent"
+          />
+        </div>
+      </section>
+
+      <section class="section predictor-section" id="predictor">
+        <h2>Predict Total Pure Alcohol</h2>
+        <p class="section-description">
+          Enter the beverage servings and select the country and continent.
+        </p>
+
+        <div class="form-card">
+          <form method="POST" action="{{ url_for('home') }}">
+            <label for="country">Country</label>
+            <select id="country" name="country" required>
+              {% for country in countries %} {% if form_values.country ==
+              country %}
+              <option value="{{ country }}" selected>{{ country }}</option>
+              {% else %}
+              <option value="{{ country }}">{{ country }}</option>
+              {% endif %} {% endfor %}
+            </select>
+
+            <label for="continent">Continent</label>
+            <select id="continent" name="continent" required>
+              {% for continent in continents %} {% if form_values.continent ==
+              continent %}
+              <option value="{{ continent }}" selected>{{ continent }}</option>
+              {% else %}
+              <option value="{{ continent }}">{{ continent }}</option>
+              {% endif %} {% endfor %}
+            </select>
+
+            <label for="beer_servings">Beer Servings</label>
+            <input
+              type="number"
+              id="beer_servings"
+              name="beer_servings"
+              min="0"
+              step="any"
+              value="{{ form_values.beer_servings }}"
+              placeholder="Enter beer servings"
+              required
+            />
+
+            <label for="spirit_servings">Spirit Servings</label>
+            <input
+              type="number"
+              id="spirit_servings"
+              name="spirit_servings"
+              min="0"
+              step="any"
+              value="{{ form_values.spirit_servings }}"
+              placeholder="Enter spirit servings"
+              required
+            />
+
+            <label for="wine_servings">Wine Servings</label>
+            <input
+              type="number"
+              id="wine_servings"
+              name="wine_servings"
+              min="0"
+              step="any"
+              value="{{ form_values.wine_servings }}"
+              placeholder="Enter wine servings"
+              required
+            />
+
+            <button type="submit" class="primary-button">
+              Predict Alcohol Consumption
+            </button>
+          </form>
+
+          {% if prediction is not none %}
+          <div class="result">
+            <p>Predicted Total Litres of Pure Alcohol</p>
+            <h3>{{ prediction }}</h3>
+            <p class="result-note">
+              Prediction from the trained regression model
+            </p>
+          </div>
+          {% endif %} {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="section model-info">
+        <h2>About the Model</h2>
+        <p>Selected model: <strong>{{ model_name }}</strong></p>
+        <p>
+          The model was selected by comparing evaluation-data R² scores after
+          regression model training and hyperparameter tuning.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Beer Servings Project | Python & Flask</p>
+    </footer>
+  </body>
+</html>
